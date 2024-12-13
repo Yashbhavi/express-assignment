@@ -10,7 +10,7 @@ function App() {
         try {
             const response = await axios.post('https://express-assignment-61e5561-395048402555.asia-south1.run.app/click', {button}, {
                 headers: {
-                    authorization: `Bearer`,
+                    authorization: `Bearer {idToken}`,
                     'Content-Type': 'application/json'
                 }
             });
