@@ -1,25 +1,34 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const redis = require('redis');
-const cors = require("cors")
 const { PubSub } = require('@google-cloud/pubsub');
-const path = require('path');
+// const { Firestore } = require("@google-cloud/firestore")
+const dotenv = require("dotenv")
 
+dotenv.config()
+
+const PORT = process.env.PORT || 8080
 const app = express();
-app.use(cors(
-    {
-    origin: "*",
-    methods: ['GET','POST'],
-    allowedHeaders: ['Content-Type']
-}
-))
+
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*'); // Allow all origins (adjust as needed)
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'); // Allow specific HTTP methods
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Allow specific headers
+    res.setHeader('Access-Control-Allow-Credentials', 'true'); // If you want to allow cookies
+    if (req.method === 'OPTIONS') {
+        console.log("INSIDE SET HEADERS================================")
+      return res.status(200).end(); // Respond to preflight request
+    }
+    next();
+  });
 
 app.use(bodyParser.json());
 
-app.use(express.static(path.join(__dirname, 'client/build')));
+// const db = new Firestore({
+//     projectId: 'assignment-444606',
+//     keyFilename: path.join(__dirname,'./keys/service-account.json'),
+//   });
 
 const pubsub = new PubSub();
-const redisClient = redis.createClient();
 const BUTTON_LIMIT = 10;
 const WINDOW_DURATION = 60 * 1000; // 1 minute
 
@@ -35,7 +44,13 @@ const publishRateLimitEvent = async (button, ip) => {
 };
 
 const logClick = async (button, ip) => {
-    // Example: log to a database (mocked here)
+    // const docRef = db.collection('button_clicks').doc(`button_${button}_${ip}`);
+    // await docRef.set({
+    //     buttonColor: button,
+    //     ipAddress: ip,
+    //     timestamps: Firestore.FieldValue.serverTimestamp(),
+    // });
+
     console.log(`[LOG] Button: ${button}, IP: ${ip}, Timestamp: ${new Date().toISOString()}`);
 };
 
@@ -45,7 +60,7 @@ app.get("/", (req,res) => {
 
 app.post('/click', async (req, res) => {
     const { button } = req.body;
-    const ip = req.ip;
+    const ip = req.socket.remoteAddress
 
     if (!['blue', 'red'].includes(button)) {
         return res.status(400).json({ message: 'Invalid button' });
@@ -66,12 +81,13 @@ app.post('/click', async (req, res) => {
     rateLimits[button][ip] = timestamps;
     await logClick(button, ip);
 
+    console.log("[LOG] Inside CLICK APi ------------------------>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
     res.json({ message: `${button} button clicked.` });
 });
 
-// Fallback for React routing
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-});
+app.get("/hello", (req,res) => {
+    res.json({message: "Hello from updated code in Node JS", data: ["1","2","3","4"]})
+    console.log("INSIDE NEW HELLO POST API-----------------------------")
+})
 
-app.listen(8080, () => console.log('App running on port 8080'));
+app.listen(PORT, () => console.log(`App running on port ${PORT}`));
