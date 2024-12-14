@@ -1,70 +1,34 @@
-# Getting Started with Create React App
+# Pre-requisites
+Need to install 
+- Docker Desktop app
+- Google Cloud CLI
+- Pulumi CLI
+- Need to create an project in Google Cloud Console for proceeding and need to enable billing as well for deploying express app as well.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+# Getting started with React App
+- The UI part is present on the " master " branch.
+- Checkout to the "master" branch and enter the path for client folder( e.g - C:/usr/express-assignment/client)
+- Run the command " yarn install "
+- Then run yarn start to start the localhost for the UI part.
+- For deploying the UI you need to push the changes to master branch it will get deployed through Vercel automatically.
 
-In the project directory, you can run:
+# For the NodeJS server
+- You need to switch to the " client " branch there you will see 2 folders, server and infra.
+- server contains the express app code and the infra contains the pulumi related code.
+- enter the path for server folder ( e.g - C:/usr/express-assignment/server)
+- Run the command yarn start which will start the local development server
+- If you want to deploy the express app you will need to create a docker image of the app first
+- Command for creating the docker image " docker build -t gcr.io/[PROJECT_ID]/[IMAGE NAME]:[TAG] . "
+- After creating the image then we need to push the docker image to the Google Container Registry (GCR) with the command " docker push gcr.io/[PROJECT_ID]/[IMAGE NAME]:[TAG] "
 
-### `npm start`
+# For the Pulumi Server
+- enter the path for infra folder ( e.g - C:/usr/express-assignment/infra)
+- After the image is generated then you need to add the image name in the index.tsx file in the infra folder
+- Then you will be asked if you want to update the changes, if we select yes then  the image will be deployed to the Google Cloud Run Service.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Note
+- Tried to implement the Cloud Firestore and Pub/Sub but got into some errors which I was unable to resolve.
+- These concepts were new, so might be I made some rookie error in configuring the CLoud Firestore and Pub/Sub, will definitely improve these aspects as well.
+- Got to learn about Pulumi, Google Cloud Run and Docker while completing this assignment will sureky explore these tech stacks further.
