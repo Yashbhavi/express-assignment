@@ -1,56 +1,54 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { notification } from 'antd'; // Import notification from Ant Design
+import { Toast, ToastContainer } from 'react-bootstrap'; // Import Toast and ToastContainer from react-bootstrap
 import './App.css';
 
 function App() {
     const [message, setMessage] = useState('');
+    const [showToast, setShowToast] = useState(false); // State to control showing the toast
+    const [isError, setIsError] = useState(false);
 
     const handleClick = async (button) => {
         setMessage(''); // Clear previous message
+        setIsError(false)
         try {
             const response = await axios.post('https://express-app-160811f-395048402555.asia-south1.run.app/click', { button }, {
                 headers: {
-                    authorization: `Bearer {idToken}`, // Replace {idToken} with the actual token
-                    'Content-Type': 'application/json',
-                },
+                    authorization: `Bearer {idToken}`, // Replace with actual token
+                    'Content-Type': 'application/json'
+                }
             });
-
-            // Show success notification
-            notification.success({
-                message: 'Success',
-                description: response.data.message, // Display message from the response
-                placement: 'top', // Notification position at the top
-            });
-
+            console.log('response: ', response);
+            setMessage(response.data.message);
+            setShowToast(true); // Show toast on successful response
         } catch (error) {
             if (error.response) {
-                // Show error notification
-                notification.error({
-                    message: 'Error',
-                    description: error.response.data.message || 'Rate limit reached',
-                    placement: 'top', // Notification position at the top
-                });
+                setMessage(error.response.data.message || 'Rate limit reached');
+                setIsError(true)
             } else {
-                // Show generic error notification
-                notification.error({
-                    message: 'Error',
-                    description: 'An error occurred. Please try again.',
-                    placement: 'top', // Notification position at the top
-                });
+                setMessage('An error occurred. Please try again.');
+                setIsError(true)
             }
+            setShowToast(true); // Show toast on error
         }
     };
 
     return (
         <div className="App">
             <header className="App-header">
-                <h1>Click the Button</h1>
+                <h1>Button Click App</h1>
                 <div className="buttons">
                     <button className="blue" onClick={() => handleClick('blue')}>Blue Button</button>
                     <button className="red" onClick={() => handleClick('red')}>Red Button</button>
                 </div>
             </header>
+
+            {/* ToastContainer is needed to render Toast components */}
+            <ToastContainer position="top-end" className="p-1">
+                <Toast show={showToast} onClose={() => setShowToast(false)} bg={isError ? "danger" : "success"} delay={3000} autohide>
+                    <Toast.Body>{message}</Toast.Body>
+                </Toast>
+            </ToastContainer>
         </div>
     );
 }
