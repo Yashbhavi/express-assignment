@@ -12,7 +12,7 @@ function App() {
         setMessage(''); // Clear previous message
         setIsError(false)
         try {
-            const response = await axios.post('https://express-app-160811f-395048402555.asia-south1.run.app/click', { button }, {
+            const response = await axios.post('https://express-assignment-1c49b37-395048402555.asia-south1.run.app/click', { button }, {
                 headers: {
                     authorization: `Bearer {idToken}`, // Replace with actual token
                     'Content-Type': 'application/json'
